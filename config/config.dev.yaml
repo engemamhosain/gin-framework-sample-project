@@ -1,0 +1,4 @@
+app:
+  port: 8088
+  master-url: root:test@tcp(localhost:3306)/TestDB
+  slave-url: root:test@tcp(localhost:3306)/TestDB
