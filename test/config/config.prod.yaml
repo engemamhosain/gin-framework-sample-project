@@ -1,0 +1,5 @@
+app:
+  port: 8094
+  mq_url: amqp://tl-developer:M0hakhl1221@172.26.5.68:5672/
+  cert: /etc/letsencrypt/live/pandora.trucklagbe.com/fullchain.pem
+  privkey: /etc/letsencrypt/live/pandora.trucklagbe.com/privkey.pem

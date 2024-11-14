@@ -14,6 +14,7 @@ import (
 // GetUser handles GET requests to fetch a user by ID
 func GetUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
+	fmt.Println("id", id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
@@ -44,15 +45,17 @@ func CreateUser(c *gin.Context) {
 	err := util.Validate(payload)
 
 	if err != nil {
-		// If validation fails, return a 400 with the validation errors
 		c.JSON(http.StatusBadRequest, gin.H{"payload-validation-error": err.Error()})
 		return
 	}
 
-	fmt.Println(payload)
 	if err := services.RegisterUser(payload); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
+		fmt.Println(err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+
+	util.APIResponse(c, "Login successfully", http.StatusOK, map[string]string{"message": "User created successfully"})
+	return
+
 }

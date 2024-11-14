@@ -1,0 +1,5 @@
+app:
+  port: 8088
+  mq_url: amqp://tl-developer:M0hakhl1221@103.199.168.131:5672/
+    cert: /etc/letsencrypt/live/box.trucklag.be/fullchain.pem
+  privkey: /etc/letsencrypt/live/box.trucklag.be/privkey.pem

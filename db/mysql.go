@@ -18,6 +18,7 @@ func InitializeMySQL() {
 	var err error
 
 	DB, err = sql.Open("mysql", config.Config.GetString("app.master-url"))
+	fmt.Println(config.Config.GetString("app.master-url"))
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}

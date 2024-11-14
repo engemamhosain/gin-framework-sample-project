@@ -1,16 +1,18 @@
 package controllers
 
 import (
+	"gin-sample-project/dto"
+	"gin-sample-project/services"
 	util "gin-sample-project/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type auth struct {
-	Username string `valid:"Required; MaxSize(50)"`
-	Password string `valid:"Required; MaxSize(50)"`
-}
+// type auth struct {
+// 	Username string `valid:"Required; MaxSize(50)"`
+// 	Password string `valid:"Required; MaxSize(50)"`
+// }
 
 // @Summary Get Auth
 // @Produce  json
@@ -19,20 +21,32 @@ type auth struct {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /auth [get]
-func GetAuth(c *gin.Context) {
-	// valid := validation.Validation{}
+func PostAuth(c *gin.Context) {
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		fmt.Println("Recovered from panic:", r)
+	// 	}
+	// }()
 
-	// username := c.PostForm("username")
-	// password := c.PostForm("password")
+	var payload *dto.Auth
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	// a := auth{Username: username, Password: password}
-	// ok, _ := valid.Valid(&a)
+	err := util.Validate(payload)
 
-	// if !ok {
-	// 	//common.MarkErrors(valid.Errors)
-	// 	common.Response(http.StatusBadRequest, common.INVALID_PARAMS, nil)
-	// 	return
-	// }
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"payload-validation-error": err.Error()})
+		return
+	}
 
-	util.APIResponse(c, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": "accessToken"})
+	user, err := services.FetchUserByUserName(payload.Username)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	util.APIResponse(c, "Login successfully", http.StatusOK, user)
 }
